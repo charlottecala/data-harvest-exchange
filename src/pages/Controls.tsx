@@ -6,15 +6,18 @@ import Slider from '../components/controls/Slider';
 import ControlPanel from '../components/controls/ControlPanel';
 
 const Controls = () => {
-  const [controlMode, setControlMode] = useState('automatic');
+  const [controlMode, setControlMode] = useState<'automatic' | 'manual' | 'scheduled' | 'maintenance'>('automatic');
   const [selectedZone, setSelectedZone] = useState('zone3');
+  const [flowRateValue, setFlowRateValue] = useState(71.1);
+  const [heatExchangerValue, setHeatExchangerValue] = useState(38.6);
+  const [zone3TempValue, setZone3TempValue] = useState(31);
+  const [zone3FlowValue, setZone3FlowValue] = useState(15);
   
-  const controlModes = [
-    { id: 'automatic', label: 'Automatic' },
-    { id: 'manual', label: 'Manual' },
-    { id: 'scheduled', label: 'Scheduled' },
-    { id: 'maintenance', label: 'Maintenance' }
-  ];
+  // Optimization priorities state
+  const [energyEfficiency, setEnergyEfficiency] = useState(80);
+  const [heatUsage, setHeatUsage] = useState(70);
+  const [cropGrowth, setCropGrowth] = useState(90);
+  const [spaceUtil, setSpaceUtil] = useState(60);
   
   const zones = [
     { id: 'zone1', label: 'Zone 1' },
@@ -24,69 +27,14 @@ const Controls = () => {
     { id: 'zone5', label: 'Zone 5' }
   ];
   
-  // Transfer controls data
-  const transferControls = [
-    {
-      id: 'flow-rate',
-      label: 'Primary Flow Rate',
-      value: 71.1,
-      min: 0,
-      max: 100,
-      step: 1,
-      additionalInfo: 'Target: 450 L/min | Current: 320 L/min'
-    },
-    {
-      id: 'temp',
-      label: 'Heat Exchanger Temperature',
-      value: 38.6,
-      min: 15,
-      max: 45,
-      step: 0.1,
-      additionalInfo: 'Range: 15-45°C | Optimal: 35-40°C',
-      colorScheme: 'amber'
-    }
-  ];
-  
-  // Distribution balance data
-  const distributionData = [
-    { id: 'zones-1-2', label: 'Zones 1-2', value: 35 },
-    { id: 'zones-3-4', label: 'Zones 3-4', value: 15, colorScheme: 'red' },
-    { id: 'zones-5-7', label: 'Zones 5-7', value: 50 },
-    { id: 'zones-8-9', label: 'Zones 8-9', value: 0 }
-  ];
-  
-  // Optimization priorities data
-  const optimizationData = [
-    { id: 'energy-efficiency', label: 'Energy Efficiency', value: 80 },
-    { id: 'heat-usage', label: 'Heat Usage Optimization', value: 70 },
-    { id: 'crop-growth', label: 'Crop Growth Conditions', value: 90 },
-    { id: 'space-util', label: 'Space Utilization', value: 60 }
-  ];
-  
-  // Zone-specific control data
-  const zoneControls = {
-    zone3: {
-      temperature: {
-        id: 'zone3-temp',
-        label: 'Zone 3 Temperature Control',
-        value: 31,
-        min: 15,
-        max: 35,
-        step: 0.5,
-        additionalInfo: 'Target: 24-27°C | Adjust to reduce temperature',
-        colorScheme: 'red'
-      },
-      flow: {
-        id: 'zone3-flow',
-        label: 'Zone 3 Flow Control',
-        value: 15,
-        min: 0,
-        max: 100,
-        step: 1,
-        additionalInfo: 'Flow reduced to lower temperature | Recommended: 10-20%',
-        colorScheme: 'red'
-      }
-    }
+  // Zone distribution data
+  const zoneDistribution = {
+    zones: [
+      { name: 'Zones 1-2', value: '35%' },
+      { name: 'Zones 3-4', value: '15%', color: 'red' },
+      { name: 'Zones 5-7', value: '50%' },
+      { name: 'Zones 8-9', value: '0%' }
+    ]
   };
 
   return (
@@ -104,23 +52,50 @@ const Controls = () => {
       </div>
       
       {/* Control Mode Selector */}
-      <div className="mb-6">
-        <div className="flex items-center mb-2">
-          <span className="font-medium text-gray-700 mr-3">Control Mode:</span>
-          <div className="flex bg-gray-100 rounded-lg overflow-hidden">
-            {controlModes.map(mode => (
-              <button
-                key={mode.id}
-                className={`px-6 py-2 transition-colors ${
-                  controlMode === mode.id 
-                    ? 'bg-eco-blue text-white' 
-                    : 'hover:bg-gray-200'
-                }`}
-                onClick={() => setControlMode(mode.id)}
-              >
-                {mode.label}
-              </button>
-            ))}
+      <div className="mb-6 glass-card p-6">
+        <div className="flex items-center">
+          <span className="font-medium text-gray-700 mr-4">Control Mode:</span>
+          <div className="flex">
+            <button
+              className={`px-8 py-3 transition-colors ${
+                controlMode === 'automatic' 
+                  ? 'bg-eco-blue text-white' 
+                  : 'bg-gray-200 hover:bg-gray-300'
+              }`}
+              onClick={() => setControlMode('automatic')}
+            >
+              Automatic
+            </button>
+            <button
+              className={`px-8 py-3 transition-colors ${
+                controlMode === 'manual' 
+                  ? 'bg-eco-blue text-white' 
+                  : 'bg-gray-200 hover:bg-gray-300'
+              }`}
+              onClick={() => setControlMode('manual')}
+            >
+              Manual
+            </button>
+            <button
+              className={`px-8 py-3 transition-colors ${
+                controlMode === 'scheduled' 
+                  ? 'bg-eco-blue text-white' 
+                  : 'bg-gray-200 hover:bg-gray-300'
+              }`}
+              onClick={() => setControlMode('scheduled')}
+            >
+              Scheduled
+            </button>
+            <button
+              className={`px-8 py-3 transition-colors ${
+                controlMode === 'maintenance' 
+                  ? 'bg-eco-blue text-white' 
+                  : 'bg-gray-200 hover:bg-gray-300'
+              }`}
+              onClick={() => setControlMode('maintenance')}
+            >
+              Maintenance
+            </button>
           </div>
         </div>
       </div>
@@ -131,38 +106,54 @@ const Controls = () => {
         <div className="glass-card p-5">
           <h2 className="text-xl font-semibold mb-5">Heat Transfer Controls</h2>
           
-          {transferControls.map(control => (
-            <div key={control.id} className="mb-6">
-              <ControlPanel 
-                label={control.label}
-                value={control.value}
-                min={control.min}
-                max={control.max}
-                step={control.step}
-                additionalInfo={control.additionalInfo}
-                colorScheme={control.colorScheme}
-                unit={control.id === 'temp' ? '°C' : '%'}
-                onChange={() => {}}
-              />
+          <div className="mb-6">
+            <h3 className="font-medium mb-4">Primary Flow Rate</h3>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-gray-600">Target: 450 L/min | Current: 320 L/min</span>
+              <span className="font-medium">{flowRateValue.toFixed(1)}%</span>
             </div>
-          ))}
+            <Slider 
+              value={flowRateValue} 
+              onChange={setFlowRateValue} 
+              min={0} 
+              max={100} 
+              step={0.1}
+              color="blue"
+            />
+          </div>
+          
+          <div className="mb-6">
+            <h3 className="font-medium mb-4">Heat Exchanger Temperature</h3>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-gray-600">Range: 15-45°C | Optimal: 35-40°C</span>
+              <span className="font-medium">{heatExchangerValue.toFixed(1)}°C</span>
+            </div>
+            <Slider 
+              value={heatExchangerValue} 
+              onChange={setHeatExchangerValue} 
+              min={15} 
+              max={45} 
+              step={0.1}
+              color="amber"
+            />
+          </div>
           
           <div>
-            <h3 className="font-medium text-gray-700 mb-2">Distribution Balance</h3>
+            <h3 className="font-medium mb-4">Distribution Balance</h3>
             
             <div className="space-y-4">
-              {distributionData.map(item => (
-                <div key={item.id} className="flex items-center">
-                  <span className="w-24 text-sm">{item.label}</span>
-                  <div className="flex-1 mx-3">
-                    <Slider 
-                      value={item.value} 
-                      max={100}
-                      colorScheme={item.colorScheme}
-                      onChange={() => {}}
+              {zoneDistribution.zones.map((zone, index) => (
+                <div key={index} className="flex flex-col">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium">{zone.name}</span>
+                    <span className="text-sm">{zone.value}</span>
+                  </div>
+                  <div className="progress-bar">
+                    <div 
+                      className={`progress-value ${zone.color === 'red' ? 'bg-eco-red' : 'bg-blue-500'}`}
+                      style={{ width: zone.value }}
                     />
                   </div>
-                  <span className="w-12 text-right">{item.value}%</span>
                 </div>
               ))}
             </div>
@@ -174,30 +165,76 @@ const Controls = () => {
           <h2 className="text-xl font-semibold mb-5">System Optimization</h2>
           
           <div className="mb-6">
-            <h3 className="font-medium text-gray-700 mb-3">Optimization Priorities</h3>
+            <h3 className="font-medium mb-4">Optimization Priorities</h3>
             
             <div className="space-y-4">
-              {optimizationData.map(item => (
-                <div key={item.id} className="flex items-center">
-                  <span className="w-52 text-sm">{item.label}</span>
-                  <div className="flex-1 mx-3">
-                    <Slider 
-                      value={item.value} 
-                      max={100}
-                      onChange={() => {}}
-                    />
-                  </div>
-                  <span className="w-12 text-right">{item.value}%</span>
+              <div className="flex flex-col">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Energy Efficiency</span>
+                  <span className="text-sm">{energyEfficiency}%</span>
                 </div>
-              ))}
+                <Slider 
+                  value={energyEfficiency} 
+                  onChange={setEnergyEfficiency} 
+                  min={0} 
+                  max={100} 
+                  step={1}
+                  color="blue"
+                />
+              </div>
+              
+              <div className="flex flex-col">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Heat Usage Optimization</span>
+                  <span className="text-sm">{heatUsage}%</span>
+                </div>
+                <Slider 
+                  value={heatUsage} 
+                  onChange={setHeatUsage} 
+                  min={0} 
+                  max={100} 
+                  step={1}
+                  color="blue"
+                />
+              </div>
+              
+              <div className="flex flex-col">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Crop Growth Conditions</span>
+                  <span className="text-sm">{cropGrowth}%</span>
+                </div>
+                <Slider 
+                  value={cropGrowth} 
+                  onChange={setCropGrowth} 
+                  min={0} 
+                  max={100} 
+                  step={1}
+                  color="blue"
+                />
+              </div>
+              
+              <div className="flex flex-col">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Space Utilization</span>
+                  <span className="text-sm">{spaceUtil}%</span>
+                </div>
+                <Slider 
+                  value={spaceUtil} 
+                  onChange={setSpaceUtil} 
+                  min={0} 
+                  max={100} 
+                  step={1}
+                  color="blue"
+                />
+              </div>
             </div>
           </div>
           
-          <div className="flex gap-3 mt-6">
-            <button className="bg-eco-blue text-white px-4 py-2 rounded-md hover:bg-eco-blue/90 transition-colors">
+          <div className="flex gap-3 mt-8">
+            <button className="bg-eco-blue text-white px-6 py-3 rounded-md hover:bg-eco-blue/90 transition-colors">
               Run Optimization
             </button>
-            <button className="border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-50 transition-colors">
+            <button className="border border-gray-300 px-6 py-3 rounded-md hover:bg-gray-50 transition-colors">
               Save as Preset
             </button>
           </div>
@@ -212,7 +249,7 @@ const Controls = () => {
           {zones.map(zone => (
             <button
               key={zone.id}
-              className={`px-4 py-2 rounded-md transition-colors ${
+              className={`px-6 py-3 rounded-md transition-colors ${
                 selectedZone === zone.id
                   ? zone.status === 'alert'
                     ? 'bg-red-500 text-white'
@@ -229,48 +266,52 @@ const Controls = () => {
         </div>
         
         {selectedZone === 'zone3' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="border border-red-200 bg-red-50 rounded-lg p-4">
-              <ControlPanel 
-                label={zoneControls.zone3.temperature.label}
-                value={zoneControls.zone3.temperature.value}
-                min={zoneControls.zone3.temperature.min}
-                max={zoneControls.zone3.temperature.max}
-                step={zoneControls.zone3.temperature.step}
-                additionalInfo={zoneControls.zone3.temperature.additionalInfo}
-                colorScheme={zoneControls.zone3.temperature.colorScheme}
-                unit="°C"
-                onChange={() => {}}
+              <h3 className="font-medium text-red-700 mb-3">Zone 3 Temperature Control</h3>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">Target: 24-27°C | Adjust to reduce temperature</span>
+                <span className="font-medium text-red-700">{zone3TempValue}°C</span>
+              </div>
+              <Slider 
+                value={zone3TempValue} 
+                onChange={setZone3TempValue} 
+                min={15} 
+                max={35} 
+                step={0.5}
+                color="red"
               />
             </div>
             
             <div className="border border-red-200 bg-red-50 rounded-lg p-4">
-              <ControlPanel 
-                label={zoneControls.zone3.flow.label}
-                value={zoneControls.zone3.flow.value}
-                min={zoneControls.zone3.flow.min}
-                max={zoneControls.zone3.flow.max}
-                step={zoneControls.zone3.flow.step}
-                additionalInfo={zoneControls.zone3.flow.additionalInfo}
-                colorScheme={zoneControls.zone3.flow.colorScheme}
-                unit="% (Reduced)"
-                onChange={() => {}}
+              <h3 className="font-medium text-red-700 mb-3">Zone 3 Flow Control</h3>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">Flow reduced to lower temperature | Recommended: 10-20%</span>
+                <span className="font-medium text-red-700">{zone3FlowValue}% (Reduced)</span>
+              </div>
+              <Slider 
+                value={zone3FlowValue} 
+                onChange={setZone3FlowValue} 
+                min={0} 
+                max={100} 
+                step={1}
+                color="red"
               />
             </div>
           </div>
         )}
         
         <div className="flex gap-3 mt-6">
-          <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors">
+          <button className="bg-red-500 text-white px-6 py-3 rounded-md hover:bg-red-600 transition-colors">
             Apply Emergency Cooling
           </button>
-          <button className="bg-amber-500 text-white px-4 py-2 rounded-md hover:bg-amber-600 transition-colors">
+          <button className="bg-amber-500 text-white px-6 py-3 rounded-md hover:bg-amber-600 transition-colors">
             Divert Heat Flow
           </button>
-          <button className="bg-eco-blue text-white px-4 py-2 rounded-md hover:bg-eco-blue/90 transition-colors">
+          <button className="bg-eco-blue text-white px-6 py-3 rounded-md hover:bg-eco-blue/90 transition-colors">
             Apply Changes
           </button>
-          <button className="border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-50 transition-colors">
+          <button className="border border-gray-300 px-6 py-3 rounded-md hover:bg-gray-50 transition-colors">
             Cancel
           </button>
         </div>
