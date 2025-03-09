@@ -19,32 +19,32 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, title, subtitle }) =>
           
           <nav className="hidden md:flex items-center space-x-1">
             <NavLink to="/" className={({ isActive }) => 
-              `nav-link ${isActive ? 'active' : ''}`
+              `px-3 py-2 rounded-md transition-colors ${isActive ? 'bg-white/10 text-white' : 'text-white/80 hover:text-white hover:bg-white/5'}`
             }>
               Dashboard
             </NavLink>
             <NavLink to="/heat-sources" className={({ isActive }) => 
-              `nav-link ${isActive ? 'active' : ''}`
+              `px-3 py-2 rounded-md transition-colors ${isActive ? 'bg-white/10 text-white' : 'text-white/80 hover:text-white hover:bg-white/5'}`
             }>
               Heat Sources
             </NavLink>
             <NavLink to="/farm-zones" className={({ isActive }) => 
-              `nav-link ${isActive ? 'active' : ''}`
+              `px-3 py-2 rounded-md transition-colors ${isActive ? 'bg-white/10 text-white' : 'text-white/80 hover:text-white hover:bg-white/5'}`
             }>
               Farm Zones
             </NavLink>
             <NavLink to="/controls" className={({ isActive }) => 
-              `nav-link ${isActive ? 'active' : ''}`
+              `px-3 py-2 rounded-md transition-colors ${isActive ? 'bg-white/10 text-white' : 'text-white/80 hover:text-white hover:bg-white/5'}`
             }>
               Controls
             </NavLink>
             <NavLink to="/analytics" className={({ isActive }) => 
-              `nav-link ${isActive ? 'active' : ''}`
+              `px-3 py-2 rounded-md transition-colors ${isActive ? 'bg-white/10 text-white' : 'text-white/80 hover:text-white hover:bg-white/5'}`
             }>
               Analytics
             </NavLink>
             <NavLink to="/settings" className={({ isActive }) => 
-              `nav-link ${isActive ? 'active' : ''}`
+              `px-3 py-2 rounded-md transition-colors ${isActive ? 'bg-white/10 text-white' : 'text-white/80 hover:text-white hover:bg-white/5'}`
             }>
               Settings
             </NavLink>
