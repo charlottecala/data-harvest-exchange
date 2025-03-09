@@ -9,63 +9,56 @@ interface HeatTransferFlowProps {
 }
 
 const HeatTransferFlow = ({ nodes, connections }: HeatTransferFlowProps) => {
-  const getNodeClass = (type: string, status?: string) => {
-    let baseClass = "relative p-4 rounded-lg flex flex-col items-center justify-center border text-center min-w-[100px]";
-    
-    if (type === 'source') {
-      return `${baseClass} bg-blue-100 border-blue-200`;
-    } else if (type === 'distribution') {
-      return `${baseClass} bg-purple-100 border-purple-200 rounded-full`;
-    } else if (type === 'zone') {
-      if (status === 'alert') {
-        return `${baseClass} bg-red-100 border-red-200`;
-      }
-      return `${baseClass} bg-green-100 border-green-200`;
-    }
-    
-    return baseClass;
-  };
+  // Group nodes by type for easier rendering
+  const sourceNodes = nodes.filter(node => node.type === 'source');
+  const distributionNode = nodes.find(node => node.type === 'distribution');
+  const zoneNodes = nodes.filter(node => node.type === 'zone');
 
   return (
-    <div className="glass-card p-6 animate-fade-in">
-      <h3 className="font-medium text-lg mb-4">Heat Transfer Flow</h3>
-      
-      <div className="flex items-center justify-between flex-wrap gap-4 relative">
-        {/* Source Nodes */}
-        <div className="flex flex-col gap-4">
-          {nodes.filter(node => node.type === 'source').map(node => (
-            <div key={node.id} className={getNodeClass(node.type)}>
+    <div className="p-4">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        {/* Source Nodes (Data Centers) */}
+        <div className="flex flex-col gap-6">
+          {sourceNodes.map(node => (
+            <div key={node.id} className="bg-blue-100 border border-blue-200 rounded-lg p-4 w-[180px] text-center">
               <div className="font-medium">{node.label}</div>
-              <div className="text-sm text-blue-600 font-semibold">{node.value}</div>
+              <div className="text-blue-700 font-bold">{node.value}</div>
             </div>
           ))}
         </div>
         
-        {/* Arrows */}
-        <div className="flex items-center">
-          <ArrowRight className="h-6 w-6 flow-arrow" />
+        {/* Arrow to Distribution */}
+        <div className="transform rotate-90 md:rotate-0">
+          <ArrowRight className="text-blue-500 h-8 w-8" />
         </div>
         
         {/* Distribution Node */}
-        <div>
-          {nodes.filter(node => node.type === 'distribution').map(node => (
-            <div key={node.id} className={getNodeClass(node.type)}>
-              <div className="font-medium">{node.label}</div>
-            </div>
-          ))}
-        </div>
+        {distributionNode && (
+          <div className="bg-purple-100 border border-purple-200 rounded-full p-4 w-[150px] h-[150px] flex items-center justify-center">
+            <div className="font-medium text-center text-purple-800">{distributionNode.label}</div>
+          </div>
+        )}
         
-        {/* Arrows */}
-        <div className="flex items-center">
-          <ArrowRight className="h-6 w-6 flow-arrow" />
+        {/* Arrows to Zones */}
+        <div className="transform rotate-90 md:rotate-0">
+          <ArrowRight className="text-blue-500 h-8 w-8" />
         </div>
         
         {/* Zone Nodes */}
-        <div className="flex flex-col gap-4">
-          {nodes.filter(node => node.type === 'zone').map(node => (
-            <div key={node.id} className={getNodeClass(node.type, node.status)}>
+        <div className="flex flex-col gap-6">
+          {zoneNodes.map(node => (
+            <div 
+              key={node.id} 
+              className={`border rounded-lg p-4 w-[180px] text-center ${
+                node.status === 'alert' 
+                  ? 'bg-red-100 border-red-200' 
+                  : 'bg-green-100 border-green-200'
+              }`}
+            >
               <div className="font-medium">{node.label}</div>
-              <div className="text-xs">{node.status === 'alert' ? 'Alert' : 'Optimal'}</div>
+              <div className="text-sm mt-1">
+                {node.status === 'alert' ? 'Alert' : 'Optimal'}
+              </div>
             </div>
           ))}
         </div>

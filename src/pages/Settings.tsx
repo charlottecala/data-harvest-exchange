@@ -239,9 +239,14 @@ const Settings = () => {
             {activeTab !== 'general' && (
               <div className="min-h-[400px] flex flex-col items-center justify-center text-center p-6">
                 <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-                  {menuItems.find(item => item.id === activeTab)?.icon && (
-                    <menuItems.find(item => item.id === activeTab)!.icon className="h-8 w-8 text-eco-blue" />
-                  )}
+                  {(() => {
+                    const item = menuItems.find(item => item.id === activeTab);
+                    if (item) {
+                      const Icon = item.icon;
+                      return <Icon className="h-8 w-8 text-eco-blue" />;
+                    }
+                    return null;
+                  })()}
                 </div>
                 <h3 className="text-xl font-medium mb-2">{menuItems.find(item => item.id === activeTab)?.label}</h3>
                 <p className="text-gray-600">This section is coming soon. The current prototype focuses on the core General Settings.</p>

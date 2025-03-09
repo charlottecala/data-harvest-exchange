@@ -17,18 +17,16 @@ const CropHealthChart = ({ crops }: CropHealthProps) => {
   };
 
   return (
-    <div className="glass-card p-6 animate-fade-in">
-      <h3 className="font-medium text-lg mb-4">Current Crop Health</h3>
-      
+    <div className="p-4">
       <div className="grid grid-cols-3 gap-4">
         {crops.map((crop, index) => (
           <div key={index} className="flex flex-col items-center">
             <div 
-              className={`w-16 h-16 rounded-full flex items-center justify-center text-lg font-semibold mb-2 ${getHealthColor(crop.health)}`}
+              className={`w-16 h-16 rounded-full flex items-center justify-center text-lg font-semibold ${getHealthColor(crop.health)}`}
             >
               {crop.health}%
             </div>
-            <span className="text-sm font-medium">{crop.name}</span>
+            <span className="text-sm font-medium mt-2">{crop.name}</span>
           </div>
         ))}
       </div>

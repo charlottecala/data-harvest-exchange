@@ -18,9 +18,7 @@ const SpaceUtilizationChart = ({ zones }: SpaceUtilizationProps) => {
   };
 
   return (
-    <div className="glass-card p-6 animate-fade-in">
-      <h3 className="font-medium text-lg mb-4">Space Utilization by Zone</h3>
-      
+    <div className="p-4">
       <div className="space-y-4">
         {zones.map((zone) => (
           <div key={zone.id} className="space-y-1">
@@ -28,9 +26,9 @@ const SpaceUtilizationChart = ({ zones }: SpaceUtilizationProps) => {
               <span>{zone.name}</span>
               <span className="font-medium">{zone.utilization}%</span>
             </div>
-            <div className="progress-bar">
+            <div className="h-6 bg-gray-100 rounded-md overflow-hidden">
               <div 
-                className={`progress-value ${getUtilizationColor(zone.utilization)}`}
+                className={`h-full ${getUtilizationColor(zone.utilization)}`}
                 style={{ width: `${zone.utilization}%` }}
               />
             </div>

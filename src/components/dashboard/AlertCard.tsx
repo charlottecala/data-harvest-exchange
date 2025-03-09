@@ -1,13 +1,13 @@
 
 import React from 'react';
-import { AlertTriangle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 interface AlertCardProps {
   title: string;
   description: string;
   actionText?: string;
   onAction?: () => void;
-  severity?: 'critical' | 'warning' | 'info';
+  severity: 'critical' | 'warning' | 'info';
 }
 
 const AlertCard = ({ 
@@ -20,13 +20,13 @@ const AlertCard = ({
   const getSeverityClasses = () => {
     switch (severity) {
       case 'critical':
-        return 'bg-status-alert border-eco-red/30';
+        return 'bg-red-50 border-red-200';
       case 'warning':
-        return 'bg-status-warning border-amber-400/30';
+        return 'bg-amber-50 border-amber-200';
       case 'info':
         return 'bg-blue-50 border-blue-200';
       default:
-        return 'bg-status-warning border-amber-400/30';
+        return 'bg-amber-50 border-amber-200';
     }
   };
 
@@ -44,12 +44,10 @@ const AlertCard = ({
   };
 
   return (
-    <div className={`rounded-lg border p-4 animate-scale-in ${getSeverityClasses()}`}>
+    <div className={`rounded-lg border p-4 ${getSeverityClasses()}`}>
       <div className="flex items-start">
         <div className="flex-shrink-0 mr-3">
-          <AlertTriangle 
-            className={severity === 'critical' ? 'text-eco-red' : severity === 'warning' ? 'text-amber-500' : 'text-blue-500'} 
-          />
+          <AlertCircle className={severity === 'critical' ? 'text-eco-red' : severity === 'warning' ? 'text-amber-500' : 'text-blue-500'} />
         </div>
         <div className="flex-1">
           <h4 className="font-medium text-base">{title}</h4>
