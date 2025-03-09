@@ -2,7 +2,7 @@
 import React from 'react';
 
 interface Zone {
-  id: number;
+  id: string;
   name: string;
   crop: string;
   temperature: number;
@@ -11,11 +11,11 @@ interface Zone {
 
 interface ZoneGridProps {
   zones: Zone[];
-  onSelectZone: (zoneId: number) => void;
-  selectedZoneId?: number;
+  onSelectZone: (zoneId: string) => void;
+  selectedZone?: string;
 }
 
-const ZoneGrid = ({ zones, onSelectZone, selectedZoneId }: ZoneGridProps) => {
+const ZoneGrid = ({ zones, onSelectZone, selectedZone }: ZoneGridProps) => {
   const getZoneClass = (status: string, isSelected: boolean) => {
     let baseClass = "p-6 rounded-lg cursor-pointer transition-all duration-300 flex flex-col items-center justify-center text-center h-[180px]";
     
@@ -25,11 +25,11 @@ const ZoneGrid = ({ zones, onSelectZone, selectedZoneId }: ZoneGridProps) => {
     
     switch (status) {
       case 'normal':
-        return `${baseClass} zone-normal`;
+        return `${baseClass} bg-green-100 border-2 border-green-300`;
       case 'alert':
-        return `${baseClass} zone-alert`;
+        return `${baseClass} bg-red-100 border-2 border-red-300`;
       case 'warning':
-        return `${baseClass} zone-warning`;
+        return `${baseClass} bg-blue-100 border-2 border-blue-300`;
       default:
         return baseClass;
     }
@@ -42,14 +42,12 @@ const ZoneGrid = ({ zones, onSelectZone, selectedZoneId }: ZoneGridProps) => {
   };
 
   return (
-    <div className="glass-card p-6 animate-fade-in">
-      <h3 className="font-medium text-lg mb-6">Farm Layout</h3>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-50 p-6 rounded-lg">
+    <div className="bg-gray-100 p-4 rounded-lg">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {zones.map((zone) => (
           <div
             key={zone.id}
-            className={getZoneClass(zone.status, zone.id === selectedZoneId)}
+            className={getZoneClass(zone.status, zone.id === selectedZone)}
             onClick={() => onSelectZone(zone.id)}
           >
             <h3 className="text-xl font-medium mb-1">{zone.name}</h3>
@@ -64,15 +62,15 @@ const ZoneGrid = ({ zones, onSelectZone, selectedZoneId }: ZoneGridProps) => {
       
       <div className="flex items-center justify-end mt-4 space-x-4">
         <div className="flex items-center">
-          <div className="w-4 h-4 bg-status-normal border border-eco-green/30 rounded mr-2"></div>
+          <div className="w-4 h-4 bg-green-100 border-2 border-green-300 rounded mr-2"></div>
           <span className="text-sm">Normal</span>
         </div>
         <div className="flex items-center">
-          <div className="w-4 h-4 bg-status-warning border border-amber-400/30 rounded mr-2"></div>
+          <div className="w-4 h-4 bg-blue-100 border-2 border-blue-300 rounded mr-2"></div>
           <span className="text-sm">Monitoring</span>
         </div>
         <div className="flex items-center">
-          <div className="w-4 h-4 bg-status-alert border border-eco-red/30 rounded mr-2"></div>
+          <div className="w-4 h-4 bg-red-100 border-2 border-red-300 rounded mr-2"></div>
           <span className="text-sm">Alert</span>
         </div>
       </div>

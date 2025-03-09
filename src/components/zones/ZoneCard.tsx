@@ -1,31 +1,20 @@
 
 import React from 'react';
 
-interface ZoneDetailProps {
+interface ZoneCardProps {
   zone: {
-    id: number;
+    id: string;
     name: string;
     crop: string;
-    cropHealth: number;
-    temperature: {
-      current: number;
-      target: string;
-    };
-    humidity: {
-      current: number;
-      target: string;
-    };
-    spaceUtilization: {
-      current: number;
-      target: string;
-    };
+    temperature: number;
+    humidity: number;
+    spaceUsage: number;
     status: 'normal' | 'alert' | 'warning';
   };
-  onAdjustHeat: () => void;
-  onViewDetails: () => void;
+  isDetailed?: boolean;
 }
 
-const ZoneCard = ({ zone, onAdjustHeat, onViewDetails }: ZoneDetailProps) => {
+const ZoneCard = ({ zone, isDetailed }: ZoneCardProps) => {
   const getProgressColor = (value: number, type: 'temperature' | 'humidity' | 'space') => {
     if (type === 'temperature') {
       return value > 30 ? 'bg-eco-red' : 'bg-eco-green';
@@ -37,77 +26,64 @@ const ZoneCard = ({ zone, onAdjustHeat, onViewDetails }: ZoneDetailProps) => {
   };
 
   return (
-    <div className={`glass-card p-6 animate-fade-in border-l-4 ${zone.status === 'alert' ? 'border-l-eco-red' : zone.status === 'warning' ? 'border-l-amber-400' : 'border-l-eco-green'}`}>
-      <h3 className="font-medium text-xl mb-4">{zone.name}</h3>
+    <div className={`p-4 ${isDetailed ? 'border border-gray-200 rounded-lg' : ''}`}>
+      <h3 className="font-medium text-xl mb-2">{zone.name}</h3>
       
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div>
-          <p className="text-muted-foreground mb-2">Current Crop: {zone.crop}</p>
-          <p className="mb-2">Crop Health: <span className="font-medium">{zone.cropHealth}%</span></p>
+          <p className="text-muted-foreground mb-1">Current Crop: {zone.crop}</p>
+          <p className="mb-2">Crop Health: <span className="font-medium">64%</span></p>
         </div>
         
-        <div className="space-y-4">
-          <div>
-            <div className="flex justify-between mb-1">
-              <span className="text-sm">Temperature</span>
-              <span className={`text-sm font-medium ${zone.temperature.current > 30 ? 'text-eco-red' : 'text-eco-green'}`}>
-                {zone.temperature.current}°C
-              </span>
+        {isDetailed && (
+          <div className="space-y-4">
+            <div>
+              <div className="flex justify-between mb-1">
+                <span className="text-sm">Temperature</span>
+                <span className={`text-sm font-medium ${zone.temperature > 30 ? 'text-eco-red' : 'text-eco-green'}`}>
+                  {zone.temperature}°C
+                </span>
+              </div>
+              <div className="progress-bar">
+                <div 
+                  className={`progress-value ${getProgressColor(zone.temperature, 'temperature')}`}
+                  style={{ width: `${(zone.temperature / 40) * 100}%` }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">Target: 24-27°C</p>
             </div>
-            <div className="progress-bar">
-              <div 
-                className={`progress-value ${getProgressColor(zone.temperature.current, 'temperature')}`}
-                style={{ width: `${(zone.temperature.current / 40) * 100}%` }}
-              />
+            
+            <div>
+              <div className="flex justify-between mb-1">
+                <span className="text-sm">Humidity</span>
+                <span className={`text-sm font-medium ${zone.humidity < 50 ? 'text-eco-red' : 'text-blue-500'}`}>
+                  {zone.humidity}%
+                </span>
+              </div>
+              <div className="progress-bar">
+                <div 
+                  className={`progress-value ${getProgressColor(zone.humidity, 'humidity')}`}
+                  style={{ width: `${zone.humidity}%` }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">Target: 65-70%</p>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Target: {zone.temperature.target}</p>
+            
+            <div>
+              <div className="flex justify-between mb-1">
+                <span className="text-sm">Space Utilization</span>
+                <span className="text-sm font-medium">{zone.spaceUsage}%</span>
+              </div>
+              <div className="progress-bar">
+                <div 
+                  className={`progress-value ${getProgressColor(zone.spaceUsage, 'space')}`}
+                  style={{ width: `${zone.spaceUsage}%` }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">Target: 75%+</p>
+            </div>
           </div>
-          
-          <div>
-            <div className="flex justify-between mb-1">
-              <span className="text-sm">Humidity</span>
-              <span className={`text-sm font-medium ${zone.humidity.current < 50 ? 'text-eco-red' : 'text-blue-500'}`}>
-                {zone.humidity.current}%
-              </span>
-            </div>
-            <div className="progress-bar">
-              <div 
-                className={`progress-value ${getProgressColor(zone.humidity.current, 'humidity')}`}
-                style={{ width: `${zone.humidity.current}%` }}
-              />
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Target: {zone.humidity.target}</p>
-          </div>
-          
-          <div>
-            <div className="flex justify-between mb-1">
-              <span className="text-sm">Space Utilization</span>
-              <span className="text-sm font-medium">{zone.spaceUtilization.current}%</span>
-            </div>
-            <div className="progress-bar">
-              <div 
-                className={`progress-value ${getProgressColor(zone.spaceUtilization.current, 'space')}`}
-                style={{ width: `${zone.spaceUtilization.current}%` }}
-              />
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Target: {zone.spaceUtilization.target}</p>
-          </div>
-        </div>
-        
-        <div className="flex gap-3">
-          <button 
-            onClick={onAdjustHeat}
-            className="px-4 py-2 bg-eco-red text-white rounded-md text-sm font-medium hover:bg-red-600 transition-colors flex-1"
-          >
-            Adjust Heat
-          </button>
-          <button 
-            onClick={onViewDetails}
-            className="px-4 py-2 bg-eco-blue text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors flex-1"
-          >
-            View Details
-          </button>
-        </div>
+        )}
       </div>
     </div>
   );
