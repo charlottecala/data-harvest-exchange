@@ -5,6 +5,7 @@ import SourceCard from '../components/heatSources/SourceCard';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
+import { Source } from '../types/sourceTypes';
 
 const HeatSources = () => {
   const [selectedSourceId, setSelectedSourceId] = useState('dc1');
@@ -16,7 +17,7 @@ const HeatSources = () => {
   };
 
   // Sample data for heat sources
-  const sources = [
+  const sources: Source[] = [
     {
       id: 'dc1',
       name: 'Data Center 1',

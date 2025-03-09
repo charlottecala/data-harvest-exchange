@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Layout from '../components/layout/Layout';
 import StatsCard from '../components/dashboard/StatsCard';
@@ -8,6 +7,7 @@ import CropHealthChart from '../components/dashboard/CropHealthChart';
 import AlertCard from '../components/dashboard/AlertCard';
 import { Thermometer, DollarSign, Leaf, Gauge } from 'lucide-react';
 import { toast } from 'sonner';
+import { FlowNode, FlowConnection } from '../types/flowTypes';
 
 const Dashboard = () => {
   const [alertsHandled, setAlertsHandled] = useState(false);
@@ -26,16 +26,16 @@ const Dashboard = () => {
   };
 
   // Sample data for heat transfer flow visualization
-  const flowNodes = [
-    { id: 'dc1', label: 'Data Center 1', value: '42.3 MW', type: 'source' },
-    { id: 'dc2', label: 'Data Center 2', value: '30.5 MW', type: 'source' },
-    { id: 'distribution', label: 'Distribution', value: '', type: 'distribution' },
-    { id: 'zone12', label: 'Zone 1-2', value: '', type: 'zone', status: 'optimal' },
-    { id: 'zone34', label: 'Zone 3-4', value: '', type: 'zone', status: 'alert' },
-    { id: 'zone59', label: 'Zone 5-9', value: '', type: 'zone', status: 'optimal' },
+  const flowNodes: FlowNode[] = [
+    { id: 'dc1', label: 'Data Center 1', value: '42.3 MW', type: "source" },
+    { id: 'dc2', label: 'Data Center 2', value: '30.5 MW', type: "source" },
+    { id: 'distribution', label: 'Distribution', value: '', type: "distribution" },
+    { id: 'zone12', label: 'Zone 1-2', value: '', type: "zone", status: "optimal" },
+    { id: 'zone34', label: 'Zone 3-4', value: '', type: "zone", status: "alert" },
+    { id: 'zone59', label: 'Zone 5-9', value: '', type: "zone", status: "optimal" },
   ];
   
-  const flowConnections = [
+  const flowConnections: FlowConnection[] = [
     { from: 'dc1', to: 'distribution' },
     { from: 'dc2', to: 'distribution' },
     { from: 'distribution', to: 'zone12' },

@@ -1,19 +1,7 @@
 
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
-
-interface FlowNode {
-  id: string;
-  label: string;
-  value: string;
-  type: 'source' | 'distribution' | 'zone';
-  status?: 'optimal' | 'alert';
-}
-
-interface FlowConnection {
-  from: string;
-  to: string;
-}
+import { FlowNode, FlowConnection } from '../../types/flowTypes';
 
 interface HeatTransferFlowProps {
   nodes: FlowNode[];

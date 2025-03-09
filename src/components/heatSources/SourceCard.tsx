@@ -1,167 +1,96 @@
 
 import React from 'react';
-import { TrendingUp, TrendingDown, Thermometer, DollarSign, Leaf } from 'lucide-react';
+import { Source } from '../../types/sourceTypes';
+import { ArrowUp, ArrowDown, Power } from 'lucide-react';
 
 interface SourceCardProps {
-  source: {
-    id: string;
-    name: string;
-    status: 'online' | 'offline' | 'maintenance';
-    activeSince: string;
-    currentOutput: {
-      value: string;
-      trend: {
-        value: string;
-        direction: 'up' | 'down';
-        label: string;
-      };
-    };
-    recoveryEfficiency: {
-      value: string;
-      trend: {
-        value: string;
-        direction: 'up' | 'down';
-        label: string;
-      };
-    };
-    heatTemperature: {
-      value: string;
-      status: 'optimal' | 'warning' | 'critical';
-    };
-    costSavings: {
-      value: string;
-      trend: {
-        value: string;
-        direction: 'up' | 'down';
-        label: string;
-      };
-    };
-    co2Reduction: {
-      value: string;
-      label: string;
-    };
-  };
+  source: Source;
   isSelected: boolean;
   onSelect: () => void;
 }
 
 const SourceCard = ({ source, isSelected, onSelect }: SourceCardProps) => {
-  const getStatusClass = () => {
-    switch (source.status) {
+  const getStatusColor = (status: string) => {
+    switch (status) {
       case 'online':
-        return 'bg-status-normal text-eco-green';
+        return 'bg-eco-green text-white';
       case 'offline':
-        return 'bg-status-alert text-eco-red';
+        return 'bg-eco-red text-white';
       case 'maintenance':
-        return 'bg-status-warning text-amber-500';
+        return 'bg-amber-500 text-white';
       default:
-        return '';
+        return 'bg-secondary text-muted-foreground';
     }
   };
 
-  const getTrendIcon = (direction: 'up' | 'down') => {
-    return direction === 'up' 
-      ? <TrendingUp className="h-4 w-4" /> 
-      : <TrendingDown className="h-4 w-4" />;
-  };
-
-  const getTrendClass = (direction: 'up' | 'down') => {
-    return direction === 'up' ? 'trend-up' : 'trend-down';
-  };
-
-  const getTemperatureStatusClass = () => {
-    switch (source.heatTemperature.status) {
-      case 'optimal':
-        return 'text-eco-green';
-      case 'warning':
-        return 'text-amber-500';
-      case 'critical':
-        return 'text-eco-red';
+  const getTrendClass = (direction: string) => {
+    switch (direction) {
+      case 'up':
+        return 'trend-up';
+      case 'down':
+        return 'trend-down';
       default:
-        return '';
+        return 'trend-neutral';
+    }
+  };
+
+  const getTrendIcon = (direction: string) => {
+    switch (direction) {
+      case 'up':
+        return <ArrowUp size={16} />;
+      case 'down':
+        return <ArrowDown size={16} />;
+      default:
+        return null;
     }
   };
 
   return (
     <div 
-      className={`glass-card p-6 cursor-pointer transition-all duration-300 animate-fade-in ${isSelected ? 'border-eco-blue shadow-md' : 'hover:shadow-sm'}`}
+      className={`glass-card p-6 transition-all cursor-pointer ${isSelected ? 'border-eco-blue ring-2 ring-eco-blue/10' : 'hover:border-eco-blue/50'}`}
       onClick={onSelect}
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex justify-between items-start mb-4">
         <h3 className="font-medium text-lg">{source.name}</h3>
-        <span className={`px-3 py-1 rounded-full text-xs font-medium uppercase ${getStatusClass()}`}>
-          {source.status}
-        </span>
+        <div className={`px-2 py-1 rounded-full text-xs flex items-center gap-1 ${getStatusColor(source.status)}`}>
+          <Power size={12} /> {source.status}
+        </div>
       </div>
       
-      <p className="text-sm text-muted-foreground mb-4">
+      <div className="text-sm text-muted-foreground mb-4">
         Active since: {source.activeSince}
-      </p>
+      </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
-          <h4 className="text-sm text-muted-foreground mb-1">Current Output</h4>
-          <div className="flex items-baseline">
-            <span className="text-2xl font-semibold text-eco-blue">
-              {source.currentOutput.value}
-            </span>
-            <div className={`ml-2 ${getTrendClass(source.currentOutput.trend.direction)}`}>
-              {getTrendIcon(source.currentOutput.trend.direction)}
-              <span className="text-xs ml-1">
-                {source.currentOutput.trend.value} {source.currentOutput.trend.label}
-              </span>
-            </div>
+          <div className="stat-value">{source.currentOutput.value}</div>
+          <div className={getTrendClass(source.currentOutput.trend.direction)}>
+            {getTrendIcon(source.currentOutput.trend.direction)}
+            {source.currentOutput.trend.value}
           </div>
+          <div className="stat-label">Current Output</div>
         </div>
         
         <div>
-          <h4 className="text-sm text-muted-foreground mb-1">Recovery Efficiency</h4>
-          <div className="flex items-baseline">
-            <span className="text-2xl font-semibold text-eco-green">
-              {source.recoveryEfficiency.value}
-            </span>
-            <div className={`ml-2 ${getTrendClass(source.recoveryEfficiency.trend.direction)}`}>
-              {getTrendIcon(source.recoveryEfficiency.trend.direction)}
-              <span className="text-xs ml-1">
-                {source.recoveryEfficiency.trend.value} {source.recoveryEfficiency.trend.label}
-              </span>
-            </div>
+          <div className="stat-value">{source.recoveryEfficiency.value}</div>
+          <div className={getTrendClass(source.recoveryEfficiency.trend.direction)}>
+            {getTrendIcon(source.recoveryEfficiency.trend.direction)}
+            {source.recoveryEfficiency.trend.value}
           </div>
+          <div className="stat-label">Recovery</div>
         </div>
-        
-        <div className="flex items-center gap-2">
-          <Thermometer className="h-5 w-5 text-amber-500" />
+      </div>
+      
+      <div className="border-t border-border pt-4">
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <h4 className="text-sm text-muted-foreground">Heat Temperature</h4>
-            <span className={`font-medium ${getTemperatureStatusClass()}`}>
-              {source.heatTemperature.value}
-            </span>
-            <span className="text-xs ml-2 text-muted-foreground">
-              {source.heatTemperature.status === 'optimal' ? 'Within optimal range' : 
-               source.heatTemperature.status === 'warning' ? 'Near threshold' : 
-               'Exceeds threshold'}
-            </span>
+            <div className="stat-label mb-1">Temperature</div>
+            <div className="font-medium">{source.heatTemperature.value}</div>
           </div>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <DollarSign className="h-5 w-5 text-eco-green" />
+          
           <div>
-            <h4 className="text-sm text-muted-foreground">Cost Savings (MTD)</h4>
-            <span className="font-medium">{source.costSavings.value}</span>
-            <div className={`text-xs ${getTrendClass(source.costSavings.trend.direction)}`}>
-              {getTrendIcon(source.costSavings.trend.direction)}
-              <span>{source.costSavings.trend.value} {source.costSavings.trend.label}</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <Leaf className="h-5 w-5 text-eco-green" />
-          <div>
-            <h4 className="text-sm text-muted-foreground">CO₂ Reduction</h4>
-            <span className="font-medium">{source.co2Reduction.value}</span>
-            <span className="text-xs ml-2 text-muted-foreground">{source.co2Reduction.label}</span>
+            <div className="stat-label mb-1">CO₂ Reduced</div>
+            <div className="font-medium">{source.co2Reduction.value}</div>
           </div>
         </div>
       </div>
